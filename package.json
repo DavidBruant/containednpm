@@ -1,0 +1,16 @@
+{
+  "name": "contained-node",
+  "version": "1.0.1",
+  "description": "Everyone is über-worried about the [npm worm](https://www.kb.cert.org/vuls/id/319816).",
+  "main": "index.js",
+  "dependencies": {
+    "lodash": "^4.6.1",
+    "pizza-party": "^1.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "David Bruant <bruant.d@gmail.com> (https://twitter.com/DavidBruant)",
+  "license": "ISC"
+}

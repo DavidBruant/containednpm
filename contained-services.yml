@@ -1,0 +1,27 @@
+version: '2'
+services:
+  base_node:
+    image: node:latest
+    volumes:
+        # Provide the container with read-write authority over the current directory by default
+        # $PWD is considered as active designation
+        - $PWD:/usr/node_app
+    working_dir: /usr/node_app
+
+  node:
+    extends: base_node
+    network_mode: none # No connection to the network by default
+    
+  npm:
+    extends: base_node
+    volumes:
+        # directory for npm -g
+        # `npm config get prefix` is /usr/local, but cannot alias that because both npm and node
+        # are there, so inventing a new directory
+        - $HOME/Logiciel/docker-global-npm:/usr/local/global-npm-modules
+
+  loggednpm:
+    extends: base_node
+    volumes:
+        # for credentials
+        - $HOME/.npmrc:/root/.npmrc

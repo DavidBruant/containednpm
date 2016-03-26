@@ -1,0 +1,1 @@
+docker-compose -f ./contained-services.yml run node node $*
