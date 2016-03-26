@@ -52,9 +52,18 @@ bin/loggednpm whoami
 # this way, you can still publish ;-)
 ````
 
-Strangely, I would have assumed the `npm version patch` part and the part where `script.install` gets rewritten work, but it doesn't for some reason. In any case, the worm would not work because the dockerized version of npm is not logged in.
+The worm would not work because the dockerized version of npm is not logged in.
+The worm can modify package.json anyway and wait for us to publish
 
 
+# Limitations
+
+* perf: docker adds some slowness but it's bearable
+
+
+# Room for improvements
+
+* A single command could be provided (instead of `npm`+`loggednpm`) and analyze the commandline arguments to pick the most relevant one
 
 
 
@@ -64,3 +73,8 @@ Strangely, I would have assumed the `npm version patch` part and the part where 
 * [Polaris](http://www.hpl.hp.com/techreports/2004/HPL-2004-221.html)
 * [Virus Safe Computing Initiative](https://www.youtube.com/watch?v=pMhH6IKBrVo)
 * [Docker Containers on the Desktop](https://blog.jessfraz.com/post/docker-containers-on-the-desktop/)
+
+
+# TODO
+
+Talk about the other threat https://medium.freecodecamp.com/npm-package-hijacking-from-the-hijackers-perspective-af0c48ab9922#.evm0u6h95
