@@ -79,7 +79,6 @@ Error: Cannot find module 'wikidata-sdk'
 Passing things as stdin from host works. Interesting idea. Of course dependent modules are not available
 
 
-# Conclusion
 
 ```
 docker run -v $(pwd):/usr/app:ro -w /usr/app node:4.2 node index.js
@@ -87,5 +86,86 @@ docker run -v $(pwd):/usr/app:ro -w /usr/app node:4.2 node index.js
 alias donode='docker run -v $PWD:/usr/app:ro -w /usr/app node:4.2 node'
 alias donpm='docker run -v $PWD:/usr/app:ro -w /usr/app node:4.2 npm'
 ```
+
+
+# https://github.com/DavidBruant/contained-node/issues/1#issuecomment-202127043
+
+````sh
+docker run --privileged --name test-dind -d docker:1.10.3-dind
+
+docker exec test-dind docker ps
+# CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+docker ps
+# CONTAINER ID        IMAGE                COMMAND                  CREATED             STATUS              PORTS               NAMES
+# 26c7a2a4a022        docker:1.10.3-dind   "dockerd-entrypoint.s"   7 minutes ago       Up 7 minutes        2375/tcp            test-dind
+
+
+docker exec test-dind docker pull node:4
+# doesn't do the magic arrow thing, but who cares...
+# Super super long. Seems like it's doing a lot of file I/O (more than a regular docker pull)
+
+docker exec test-dind docker run node:4 node -v
+# v4.4.0
+time docker exec test-dind docker run node:4 node -v
+# v4.4.0
+# real	1m23.815s ... what?
+
+
+docker exec test-dind docker pull mhart/alpine-node:5
+
+docker exec test-dind docker run mhart/alpine-node:5 node -v
+# v5.9.1
+time docker exec test-dind docker run mhart/alpine-node:5 node -v
+# v5.9.1
+# Between 2 and 5secs
+````
+
+As a docker-compose service (need to make a docker image eventually):
+````
+docker-compose -f contained-services.yml run -d --name test-dind dind
+docker exec test-dind docker pull mhart/alpine-node:5
+
+````
+
+
+
+:rw then :ro
+````
+cat ./victim.txt 
+# I am safe
+
+# Inside the first container, the file is passed as read-write
+
+docker exec test-dind ls -l /home
+# total 4
+# -rw-rw-r--    1 1000     1000             9 Mar 28 12:24 victim.txt
+
+docker exec test-dind sh -c "echo "yo" >> /home/victim.txt"
+docker exec test-dind sh -c "cat /home/victim.txt"
+# I am safeyo
+# File could be modified
+
+docker exec test-dind docker pull alpine:latest
+docker exec test-dind docker run -v /home/victim.txt:/home/victim.txt:ro alpine sh -c "cat /home/victim.txt"
+# I am safeyo
+# file can be read in deeper container
+
+docker exec test-dind docker run -v /home/victim.txt:/home/victim.txt:ro alpine sh -c "echo ya >> /home/victim.txt"
+# sh: can't create /home/victim.txt: Read-only file system
+# file cannot be written as expected (:ro)
+
+echo "new message" > victim.txt
+docker exec test-dind docker run -v /home/victim.txt:/home/victim.txt:ro alpine sh -c "cat /home/victim.txt"
+# new message
+# (changes to base file are seen by deepest container)
+
+````
+
+
+
+
+
+
+
 
 

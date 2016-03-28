@@ -25,3 +25,22 @@ services:
     volumes:
         # for credentials
         - $HOME/.npmrc:/root/.npmrc
+  
+  # To be started as a daemon 
+  # docker-compose -f contained-services.yml run -d dind
+  dind:
+    image: docker:1.10.3-dind
+    privileged: true
+    # the container_name does not work with docker-compose run https://github.com/docker/compose/issues/2061
+    # Must be passed as command-line argument
+    # container_name: test-dind
+    volumes:
+        - $PWD/victim.txt:/home/victim.txt
+    
+    
+    
+    
+    
+    
+    
+    

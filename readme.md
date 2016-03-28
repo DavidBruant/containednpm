@@ -27,20 +27,26 @@ git clone git@github.com:DavidBruant/contained-node.git
 cd contained-node
 bin/node -v # should download the docker images if you don't have them yet
 # v5.9.0
+
 bin/npm -v
 # 3.7.3
+
 bin/node index.js
 # should display "hey, this is index.js!", proving that the container can reach through local filesin $PWD
+
 bin/npm install is-thirteen
 # the modules installs normally and node_modules is created
+
 npm whoami # real non-dockerized npm
 # davidbruant
+
 bin/npm whoami
-# Obviously:
 # npm ERR! need auth this command requires you to be logged in.
 # npm ERR! need auth You need to authorize this machine using `npm adduser`
 
+# Obviously because $HOME/.npmrc is not shared with the container. Beware, ./.npmrc is shared!
 # so consequently:
+
 bin/npm install https://github.com/contolini/pizza-party
 # the worm gets installed via the dockerized npm
 # the install script starts, it does not publish a new version, because we're not logged in
@@ -58,7 +64,8 @@ The worm can modify package.json anyway and wait for us to publish
 
 # Limitations
 
-* perf: docker adds some slowness but it's bearable
+* **Performance** docker adds some slowness but it's bearable
+* **File created in containers are owned by `root`**. This is annoying and forces to do `sudo chown -R $USER .` regularly.
 
 
 # Room for improvements
