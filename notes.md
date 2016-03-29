@@ -3,7 +3,7 @@
 Aim is to eventually run everything as Docker containers.
 Let's start with Node.
 
-```
+```sh
 david@ZIENA:~ $ docker run node:4.2 node -e "console.log('lol')"
 lol
 david@ZIENA:~ $ time docker run node:4.2 node -e "console.log('lol')"
@@ -35,7 +35,7 @@ sys	0m0.020s
 Take a 1s latency hit :-/
 
 
-````
+````sh
 david@ZIENA:~/projects/wikidata-pokemon (master)$ node index.js 
 Got error: getaddrinfo ENOTFOUND wdq.wmflabs.org wdq.wmflabs.org:80
 david@ZIENA:~/projects/wikidata-pokemon (master)$ docker run node:4.2 node index.js
@@ -54,7 +54,7 @@ Error: Cannot find module '/index.js'
 Error is expected, container has no knowledge of this file. How to provide it?
 
 
-````
+````sh
 david@ZIENA:~/projects/wikidata-pokemon (master)$ docker run -v .:. node:4.2 node index.js
 docker: Error response from daemon: Invalid bind mount spec ".:.": volumeabs: Invalid volume destination path: '.' mount path must be absolute..
 See 'docker run --help'.
@@ -67,7 +67,7 @@ Got error: getaddrinfo ENOTFOUND wdq.wmflabs.org wdq.wmflabs.org:80
 
 Take a good 20-30sec perf hit (for no reason?)
 
-````
+````sh
 david@ZIENA:~/projects/wikidata-pokemon (master)$ docker run -i node:4.2 node < index.js
 module.js:339
     throw err;
@@ -80,7 +80,7 @@ Passing things as stdin from host works. Interesting idea. Of course dependent m
 
 
 
-```
+```sh
 docker run -v $(pwd):/usr/app:ro -w /usr/app node:4.2 node index.js
 
 alias donode='docker run -v $PWD:/usr/app:ro -w /usr/app node:4.2 node'
@@ -123,7 +123,7 @@ time docker exec test-dind docker run mhart/alpine-node:5 node -v
 ````
 
 As a docker-compose service (need to make a docker image eventually):
-````
+````sh
 docker-compose -f contained-services.yml run -d --name test-dind dind
 docker exec test-dind docker pull mhart/alpine-node:5
 
@@ -133,7 +133,7 @@ docker exec test-dind docker pull mhart/alpine-node:5
 
 
 :rw then :ro
-````
+````sh
 cat ./victim.txt 
 # I am safe
 
@@ -166,7 +166,7 @@ docker exec test-dind docker run -v /home/victim.txt:/home/victim.txt:ro alpine 
 
 ## Attaching volumes dynamically
 
-````
+````sh
 # Install nsenter and docker-enter https://github.com/jpetazzo/nsenter
 docker run --rm -v /usr/local/bin:/target jpetazzo/nsenter
 
