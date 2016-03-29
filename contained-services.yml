@@ -35,8 +35,10 @@ services:
     # Must be passed as command-line argument
     # container_name: test-dind
     volumes:
-        - $PWD/victim.txt:/home/victim.txt
-    
+        # shared as :rw here and to be passed as :ro to inner container
+        - $PWD/victim.txt:/home/victim.txt 
+        # no mapping initially to an host directory initially, but it will be added dynamically
+        - /home/node-app
     
     
     

@@ -125,6 +125,7 @@ As a docker-compose service (need to make a docker image eventually):
 docker-compose -f contained-services.yml run -d --name test-dind dind
 docker exec test-dind docker pull mhart/alpine-node:5
 
+# docker kill test-dind ; docker rm --force test-dind
 ````
 
 
@@ -163,7 +164,25 @@ docker exec test-dind docker run -v /home/victim.txt:/home/victim.txt:ro alpine 
 
 
 
+````
+# Install nsenter and docker-enter https://github.com/jpetazzo/nsenter
+docker run --rm -v /usr/local/bin:/target jpetazzo/nsenter
 
+docker-compose -f contained-services.yml run -d --name test-dind dind
+
+# Let's read /homenode-app/package.json (this file does not exist)
+docker exec test-dind cat /home/node-app/package.json | grep name
+# cat: can't open '/home/node-app/package.json': No such file or directory
+
+# Dynamic volume swap
+./dynamic-volume.sh
+
+# Let's try again
+docker exec test-dind cat /home/node-app/package.json | grep name
+# "name": "alpha",
+
+# oh... it works!
+````
 
 
 

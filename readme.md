@@ -25,6 +25,7 @@ There is a [worm POC called "pizza-party"](https://github.com/contolini/pizza-pa
 ````sh
 git clone git@github.com:DavidBruant/contained-node.git
 cd contained-node
+
 bin/node -v # should download the docker images if you don't have them yet
 # v5.9.0
 
@@ -84,4 +85,6 @@ The worm can modify package.json anyway and wait for us to publish
 
 # TODO
 
-Talk about the other threat https://medium.freecodecamp.com/npm-package-hijacking-from-the-hijackers-perspective-af0c48ab9922#.evm0u6h95
+Talk about the other threat
+* https://medium.freecodecamp.com/npm-package-hijacking-from-the-hijackers-perspective-af0c48ab9922#.evm0u6h95
+* https://github.com/joaojeronimo/rimrafall
