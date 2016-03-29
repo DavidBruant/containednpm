@@ -90,6 +90,8 @@ alias donpm='docker run -v $PWD:/usr/app:ro -w /usr/app node:4.2 npm'
 
 # https://github.com/DavidBruant/contained-node/issues/1#issuecomment-202127043
 
+## docker in docker
+
 ````sh
 docker run --privileged --name test-dind -d docker:1.10.3-dind
 
@@ -162,7 +164,7 @@ docker exec test-dind docker run -v /home/victim.txt:/home/victim.txt:ro alpine 
 
 ````
 
-
+## Attaching volumes dynamically
 
 ````
 # Install nsenter and docker-enter https://github.com/jpetazzo/nsenter
