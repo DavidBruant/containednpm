@@ -1,5 +1,7 @@
 # This script acts inside the outer container
 
+echo 'this is the containerized sh'
+
 docker run mhart/alpine-node \
     -v /home/node-app:/home/node-app \
     -v /home/node-app/package.json:/home/node-app/package.json:ro \

@@ -1,4 +1,14 @@
 {
     "name": "alpha",
-    "version": "1.0.0"
+    "version": "1.0.0",
+
+    "description": "alpha",
+    "main": "index.js",
+    "dependencies": {},
+    "devDependencies": {},
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+    },
+    "author": "David Bruant <bruant.d@gmail.com> (https://twitter.com/DavidBruant)",
+    "license": "ISC"
 }

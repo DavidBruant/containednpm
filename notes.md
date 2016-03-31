@@ -214,18 +214,47 @@ docker exec test-dind docker run -v /home/node-app:/home/node-app:ro alpine:late
 
 ````sh
 cd project-alpha
-npm install ../worm
+npm install https://github.com/DavidBruant/harmless-worm --save
 # get infected :-/
 
 # reset to non infected state
 cd .. 
 git checkout project-alpha
 
+docker build -t dindnode .
+
+RETRY EVERYTHING STARTING HERE
 
 docker-compose -f contained-services.yml run -d --name containednode containednode
-./bin/node
+docker exec containednode docker pull mhart/alpine-node:5
 
 
+./bin/node -v # running node via the container
+./bin/containednpm -v # running npm via the container
+
+cd project-alpha
+ls -l node_modules
+# none
+
+../bin/containednpm install https://github.com/DavidBruant/harmless-worm/tarball/master --save
+# the worm fails
+
+ls -l node_modules
+# the worm is installed on alpha
+cat package.json
+# worm is in dependencies as expected
+rm -R node_modules
+
+
+cd project-beta
+../bin/containednpm install https://github.com/DavidBruant/harmless-worm --save
+# the worm fails again
+
+ls -l node_modules
+# the worm is installed on beta
+cat package.json
+# worm is in dependencies as expected
+rm -R node_modules
 
 ````
 

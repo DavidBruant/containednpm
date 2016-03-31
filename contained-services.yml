@@ -1,12 +1,8 @@
 version: '2'
 services:
   base_node:
-    image: node:latest
-    volumes:
-        # Provide the container with read-write authority over the current directory by default
-        # $PWD is considered as active designation
-        - $PWD:/usr/node_app
-    working_dir: /usr/node_app
+    image: dindnode
+    working_dir: /home/node-app
 
   node:
     extends: base_node
@@ -43,7 +39,7 @@ services:
   # To be started as a daemon 
   # docker-compose -f contained-services.yml run -d containednode
   containednode:
-    image: davidbruant/containednode
+    extends: base_node
     privileged: true
     # the container_name does not work with docker-compose run https://github.com/docker/compose/issues/2061
     # Must be passed as command-line argument
@@ -53,7 +49,7 @@ services:
         # no mapping initially to an host directory initially, but it will be added dynamically
         - /home/node-app
         # replace sh so lifecycle scripts are contained
-        - ./bin/contained-sh-for-lifecycle-scripts:/bin/sh:ro
+        - ./bin/contained-sh-for-lifecycle-scripts:/home/bin/contained-sh:ro
     
     
     
