@@ -187,6 +187,53 @@ docker exec test-dind cat /home/node-app/package.json | grep name
 ````
 
 
+### dynamic volumes + dind
+
+````sh
+# Install nsenter and docker-enter https://github.com/jpetazzo/nsenter
+
+docker-compose -f contained-services.yml run -d --name test-dind dind
+docker exec test-dind docker pull alpine:latest
+
+# Let's read /homenode-app/package.json (this file does not exist)
+docker exec test-dind docker run -v /home/node-app:/home/node-app:ro alpine:latest cat /home/node-app/package.json | grep name
+# cat: can't open '/home/node-app/package.json': No such file or directory
+
+# Dynamic volume swap
+./dynamic-volume.sh
+
+# Let's try again
+docker exec test-dind docker run -v /home/node-app:/home/node-app:ro alpine:latest cat /home/node-app/package.json | grep name
+# "name": "alpha",
+
+# oh... it works even in the deep case!
+````
+
+
+## Final boss
+
+````sh
+cd project-alpha
+npm install ../worm
+# get infected :-/
+
+# reset to non infected state
+cd .. 
+git checkout project-alpha
+
+
+docker-compose -f contained-services.yml run -d --name containednode containednode
+./bin/node
+
+
+
+````
+
+
+
+
+
+
 
 
 

@@ -39,7 +39,21 @@ services:
         - $PWD/victim.txt:/home/victim.txt 
         # no mapping initially to an host directory initially, but it will be added dynamically
         - /home/node-app
-    
+  
+  # To be started as a daemon 
+  # docker-compose -f contained-services.yml run -d containednode
+  containednode:
+    image: davidbruant/containednode
+    privileged: true
+    # the container_name does not work with docker-compose run https://github.com/docker/compose/issues/2061
+    # Must be passed as command-line argument
+    # container_name: containednode
+    volumes:
+        # shared as :rw here and to be passed as :ro to inner container
+        # no mapping initially to an host directory initially, but it will be added dynamically
+        - /home/node-app
+        # replace sh so lifecycle scripts are contained
+        - ./bin/contained-sh-for-lifecycle-scripts:/bin/sh:ro
     
     
     

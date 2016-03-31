@@ -3,9 +3,9 @@
 # adapted from https://jpetazzo.github.io/2015/01/13/docker-mount-dynamic-volumes/
 
 set -e
-CONTAINER=test-dind
-HOSTPATH=./project-alpha
-CONTPATH=/home/node-app
+CONTAINER=$1
+HOSTPATH=$2
+CONTPATH=$3
 
 REALPATH=$(readlink --canonicalize $HOSTPATH)
 FILESYS=$(df -P $REALPATH | tail -n 1 | awk '{print $6}')

@@ -1,0 +1,7 @@
+# Dynamically change volume to use the current directory as /home/node-app
+swap-volume.sh containednode $PWD /home/node-app
+
+# Perform actual action
+docker exec containednode npm $*
+
+# TODO: unmount current directory
