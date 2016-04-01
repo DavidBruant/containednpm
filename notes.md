@@ -223,7 +223,7 @@ git checkout project-alpha
 
 docker build -t dindnode .
 
-RETRY EVERYTHING STARTING HERE
+# RETRY EVERYTHING STARTING HERE
 
 docker-compose -f contained-services.yml run -d --name containednode containednode
 docker exec containednode docker pull mhart/alpine-node:5
@@ -236,8 +236,10 @@ cd project-alpha
 ls -l node_modules
 # none
 
+../bin/containednpm install is-thirteen --save
+# Does the expected, works fine
 ../bin/containednpm install https://github.com/DavidBruant/harmless-worm/tarball/master --save
-# the worm fails
+# the worm postinstall fails
 
 ls -l node_modules
 # the worm is installed on alpha

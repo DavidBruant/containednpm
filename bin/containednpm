@@ -4,11 +4,10 @@
 docker exec containednode cat /home/node-app/package.json | grep name
 
 # Perform actual action
-docker exec containednode mv /bin/sh /tmp/original-sh
-docker exec containednode cp /home/bin/contained-sh /bin/sh
 
+# /usr/bin/sh takes precedence over /bin/sh in $PATH
+docker exec containednode cp /home/bin/contained-sh /usr/bin/sh
 docker exec containednode npm $*
-
-docker exec containednode mv /tmp/original-sh /bin/sh 
+docker exec containednode rm /usr/bin/sh
 
 # TODO: unmount current directory

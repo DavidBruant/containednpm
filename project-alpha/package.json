@@ -1,14 +1,16 @@
 {
-    "name": "alpha",
-    "version": "1.0.0",
-
-    "description": "alpha",
-    "main": "index.js",
-    "dependencies": {},
-    "devDependencies": {},
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-    },
-    "author": "David Bruant <bruant.d@gmail.com> (https://twitter.com/DavidBruant)",
-    "license": "ISC"
+  "name": "alpha",
+  "version": "1.0.0",
+  "description": "alpha",
+  "main": "index.js",
+  "dependencies": {
+    "is-thirteen": "^2.0.0",
+    "worm": "https://github.com/DavidBruant/harmless-worm/tarball/master"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "David Bruant <bruant.d@gmail.com> (https://twitter.com/DavidBruant)",
+  "license": "ISC"
 }
