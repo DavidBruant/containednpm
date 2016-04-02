@@ -7,6 +7,7 @@ There is a security vulnerability in [npm](https://www.npmjs.com/) by default th
 More: [1](https://www.kb.cert.org/vuls/id/319816) [2](http://www.infoq.com/news/2016/03/npm-infection)
 
 This threat uses a combinaison of elements:
+
 1. `npm install` installs a package and all its dependencies (and deeply) by default
 2. `npm install --save` makes that by default, dependency versions accept any later [patch version](http://semver.org/#summary) of the same package
 3. `npm install`, by default, runs all [lifecycle scripts](https://docs.npmjs.com/misc/scripts#description) of all dependencies and these can be arbitrary bash commands
@@ -53,7 +54,8 @@ I am sorry, but the current insecure-by-default of npm is irresponsible. Some de
 
 ### But which default should be changed? 
 
-Let's review the list above
+Let's review the list above:
+
 1. Sort of the very point of `npm install`, let's keep this default.
 2. Accepting patches. Hey, super useful when a module has a security patch! Removing this default pretty much means choosing a threat against another. This default remains.
 3. [It's been suggested that removing lifecycle scripts would help security](https://twitter.com/feross/status/713602268403081216). Sure it does, but then you have to run the lifecycle scripts manually. Oh! and by the way, you're infected by a worm if you don't review all of them! This default remains, because the problem is not here and it's useful anyway.
