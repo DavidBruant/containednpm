@@ -22,7 +22,7 @@ This is serious.
 
 ## NPM response and defense against a worm
 
-[NPM response](http://blog.npmjs.org/post/141702881055/package-install-scripts-vulnerability) has been considered weak by others. It is. It does not change any default settings, so the threat exists
+[NPM response](http://blog.npmjs.org/post/141702881055/package-install-scripts-vulnerability) has been considered weak by some. It is. It does not change any default settings, so the threat is not really being addressed.
 
 ### Users should opt-in for security
 
@@ -33,7 +33,7 @@ npm recommands an opt-in defense which is running `npm install --ignore-scripts`
 
 > npm cannot guarantee that packages available on the registry are safe. If you see malicious code on the registry, report it to support@npmjs.com and it will be taken down.
 
-So, after the fact, when users machine have been infected by a worm npm takes the malicious package down? Thanks, lol!
+So, after the fact, when users machine have been infected by a worm npm takes the malicious package down? Too late, but thanks, lol!
 
 
 ### Defense against a "quick" worm
@@ -46,10 +46,12 @@ What about a [patient worm](patient worm design.md)? The publication frequency i
 ## Security **by default**
 
 Software should be secure by default.
+
 People who are coming to npm today and tomorrow have missed the blogposts and tweets. They'll be infected.
+
 People who reinstall node/npm will forget the secure opt-ins. They will be infected.
 
-I am sorry, but the current insecure-by-default of npm is irresponsible. Some default needs to be changed.
+I am sorry, but the current insecure-by-default state of npm is irresponsible. Some default needs to be changed.
 
 
 ### But which default should be changed? 
@@ -59,7 +61,7 @@ Let's review the list above:
 1. Sort of the very point of `npm install`, let's keep this default.
 2. Accepting patches. Hey, super useful when a module has a security patch! Removing this default pretty much means choosing a threat against another. This default remains.
 3. [It's been suggested that removing lifecycle scripts would help security](https://twitter.com/feross/status/713602268403081216). Sure it does, but then you have to run the lifecycle scripts manually. Oh! and by the way, you're infected by a worm if you don't review all of them! This default remains, because the problem is not here and it's useful anyway.
-4. Removing this default means logging in every time. Arguably a Denial-Of-Service error against the user ([credit for the joke](https://youtu.be/UH66YrzT-_M?t=347)). There is no reason to give up usability for the sake of security.
+4. Removing this default means logging in every time. Arguably a Denial-Of-Service attack against the user ([credit for the joke](https://youtu.be/UH66YrzT-_M?t=347)). There is no reason to give up usability for the sake of security.
 5. This one can be debated. Complicated topic. I'm on the side of keeping things as they are today. It's like the web. Anyone can publish, no authorizations required.
 6. well... last element in the list, so I guess that's the default I should address :-p
 
