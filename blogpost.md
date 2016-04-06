@@ -121,7 +121,3 @@ It would also fail to read your `$HOME` because it runs in a docker container an
 The lifecycle encrypts the filesystem and want to ransom for a bitcoin? It succeeds... inside the docker container which contains few valuable data (only the project you're working on)... container that is discarded at the end of the `./bin/containednpm` command, so you're data are fine without having you to pay.
 
 That's the way we can change the rules of the game permanently in favor of the defendant.
-
-
-
-
