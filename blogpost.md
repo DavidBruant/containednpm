@@ -15,7 +15,7 @@ This threat uses a combinaison of elements:
 5. By default, published packages are actually published without review
 6. Arbitrary npm lifecycle scripts bash commands have, by default, full authority over the installer computer. This includes scanning the person's hardrive, find all their node projects, modify them to add worm propagation code as a lifecycle script and then run `npm version patch ; npm publish`.
 
-Through the annoying and repeated use of "by default", the reader understands that if a worm is sent to npm, it will propagate because most people don't change defaults. Point 5 listed an example of what the worm can do to propagate, but of course once you have arbitrary access to the machine, [you can just encrypt their disk and ransom for a bitcoin against giving back the data](https://en.wikipedia.org/wiki/CryptoLocker).
+Through the repeated annoying use of "by default", the reader understands that if a worm is sent to npm, it will propagate because most people don't change defaults. Point 5 listed an example of what the worm can do to propagate, but of course once you have arbitrary access to the machine, [you can just encrypt their disk and ransom for a bitcoin against giving back the data](https://en.wikipedia.org/wiki/CryptoLocker).
 
 This is serious.
 
@@ -36,7 +36,9 @@ npm recommands an opt-in defense which is running `npm install --ignore-scripts`
 So, after the fact, when users machine have been infected by a worm npm takes the malicious package down? Too late, but thanks, lol!
 
 As soon as a package is infected, people installing it will have their machines infected. npm cannot accept to be used to affect others machines. Even if npm maybe limits the propagation, malicious packages will be sent to npm.
-Maybe the next person disatisfied with a name dispute resolution "owning" another heavily-dependend module will send malicious patch updates [instead of just unpublishing them](https://medium.com/@azerbike/i-ve-just-liberated-my-modules-9045c06be67c)
+
+Maybe the next person disatisfied with a name dispute resolution "owning" another heavily-dependend module will send malicious patch updates [instead of just unpublishing them](https://medium.com/@azerbike/i-ve-just-liberated-my-modules-9045c06be67c).
+
 As packages will be more valuable, their author will be more likely to become targets of various attacks. Maybe someone will pay an author for the ownership of a module that's heavily dependend on to distribute malware. This has happened with [Chrome extensions](http://arstechnica.com/security/2014/01/malware-vendors-buy-chrome-extensions-to-send-adware-filled-updates/), no reason this won't happen with npm especially as long as there is no trust model for authors.
 
 
@@ -69,7 +71,9 @@ Let's review the list above:
 5. This one can be debated. Complicated topic. I'm on the side of keeping things as they are today. It's like the web. Anyone can publish, no authorizations required and in any case, it's not economically tenable to not pay for npm and expect them to review packages manually
 6. well... last element in the list, so I guess that's the default I should address :-p
 
-People I don't necessarily trust a lot write scripts, post them as lifecycle scripts on npm and that runs on my machine. Why on Earth would these scripts have access to my entire filesystem, by default? This is an insane amount of authority to give to random scripts downloaded from npm, who themselves tell us they "cannot guarantee that packages available on the registry are safe".
+People I don't necessarily trust a lot write scripts, post them as lifecycle scripts on npm and that runs on my machine. Why on Earth would these scripts have access to my entire filesystem, by default? This is an absurd amount of authority to give to random scripts downloaded from npm, who themselves tell us they "cannot guarantee that packages available on the registry are safe".
+
+This is a classic violation of [POLA](https://en.wikipedia.org/wiki/Principle_of_least_authority).
 
 > Quite often, we have enough context to know that things look really alarming from the outside are really not that big a deal or rather are no bigger deal than is already there and in an unfixable way in the CLI; the package script vulnerability is a good example of that. That's just a cost of doing business with user-contributed content.
 
@@ -165,7 +169,7 @@ Regardless of the level of polishing, this defense will remain an opt-in and we 
 Security should not be an opt-in, so npm needs to be on-board otherwise, this is just yet another opt-in and does not really solve the problem.
 
 
-#### On my side
+#### npm needs to be on-board
 
 1. Get some form of acknowledgment from the npm folks that the current default is insecure
 2. Get some form of acknowledgment that npm should be secure by default
@@ -192,3 +196,4 @@ I have to note that there is a cost related to having to maintain the list of de
 
 Additionally, this default behavior for the CLI acts as negative incentive for anyone who'd want to publish malicious packages. If they know it won't work for the majority of people, they'll certainly try something else.
 
+Things can be better; npm, let's [talk](https://twitter.com/ceejbot/status/715385331520942084)!
