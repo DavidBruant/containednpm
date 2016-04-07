@@ -189,8 +189,6 @@ Bim! Secure default! And no major disruption for anyone. `--unsafe` provides a f
 
 I have to note that there is a cost related to having to maintain the list of default authority over time. I doubt it will be too much, but I know it cannot be zero.
 
+
 Additionally, this default behavior for the CLI acts as negative incentive for anyone who'd want to publish malicious packages. If they know it won't work for the majority of people, they'll certainly try something else.
-
-
-
 
