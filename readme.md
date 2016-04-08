@@ -25,7 +25,7 @@ git clone git@github.com:DavidBruant/contained-node.git
 cd contained-node
 
 # change the PATH only for this shell session
-PATH=$PWD/bin:PATH
+PATH=$PWD/bin:$PATH
 
 # Install nsenter and docker-enter from https://github.com/jpetazzo/nsenter by doing: 
 docker run --rm -v /usr/local/bin:/target jpetazzo/nsenter
