@@ -4,37 +4,31 @@ services:
     image: dindnode
     working_dir: /home/node-app
 
-  node:
-    extends: base_node
-    network_mode: none # No connection to the network by default
+  #node:
+    #extends: base_node
+    #network_mode: none # No connection to the network by default
     
-  npm:
-    extends: base_node
-    volumes:
+  #npm:
+    #extends: base_node
+    #volumes:
         # directory for npm -g
         # `npm config get prefix` is /usr/local, but cannot alias that because both npm and node
         # are there, so inventing a new directory
-        - $HOME/Logiciel/docker-global-npm:/usr/local/global-npm-modules
-
-  loggednpm:
-    extends: base_node
-    volumes:
-        # for credentials
-        - $HOME/.npmrc:/root/.npmrc
+        #- $HOME/Logiciel/docker-global-npm:/usr/local/global-npm-modules
   
   # To be started as a daemon 
   # docker-compose -f contained-services.yml run -d dind
-  dind:
-    image: docker:1.10.3-dind
-    privileged: true
+  #dind:
+    #image: docker:1.10.3-dind
+    #privileged: true
     # the container_name does not work with docker-compose run https://github.com/docker/compose/issues/2061
     # Must be passed as command-line argument
     # container_name: test-dind
-    volumes:
+    #volumes:
         # shared as :rw here and to be passed as :ro to inner container
-        - $PWD/victim.txt:/home/victim.txt 
+        #- $PWD/victim.txt:/home/victim.txt 
         # no mapping initially to an host directory initially, but it will be added dynamically
-        - /home/node-app
+        #- /home/node-app
   
   # To be started as a daemon 
   # docker-compose -f contained-services.yml run -d containednode

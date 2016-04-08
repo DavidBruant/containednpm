@@ -1,1 +1,0 @@
-docker-compose -f ./contained-services.yml run npm /bin/bash -c "npm config set prefix /usr/local/global-npm-modules; npm $*"

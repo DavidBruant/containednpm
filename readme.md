@@ -1,82 +1,103 @@
 # Contained-node
 
-Everyone is über-worried about the [npm worm](https://www.kb.cert.org/vuls/id/319816).
+There is an [npm worm vulnerability](https://www.kb.cert.org/vuls/id/319816). One of the main problems is that random scripts are run with full user privilege.
 
-The best solution so far is [feature starvation (disable lifecycle scripts)](http://blog.npmjs.org/post/141702881055/package-install-scripts-vulnerability) for users and manual inspection from npm to prevent a problem.
-
-This repo attempts to provide a pragmatic solution to this entire class of problems by containing node and npm in docker containers.
+This repo provides a proof that secure user-contributed scripts is possible. It's a POC and does not pretend that the used implementation is shippable as is. Additional work would be required for this idea to be integrated to the official npm CLI client.
 
 
-# How it works
+## How it works
 
 Run node and npm both from [Docker](https://www.docker.com/) containers with reduced authority by default.
 
-You'll need to have both docker and docker-compose installed for this to work.
 
+## Setup
 
-# This is a proof of concept
+A bunch of things to install before the POC work
 
-Plenty of paths are hardcoded
+* **Install** [Docker](https://docs.docker.com/installation/#installation)
+  * On Ubuntu, there is an [apt repository](https://docs.docker.com/engine/installation/ubuntulinux/)
+    * (for steps 5 to 7, do `echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" > /etc/apt/sources.list.d/docker.list`)  
 
-## Proving that it works
-
-There is a [worm POC called "pizza-party"](https://github.com/contolini/pizza-party), let's see if we can install it safely.
+* **Install** [Docker compose](https://docs.docker.com/compose/install/)
 
 ````sh
 git clone git@github.com:DavidBruant/contained-node.git
 cd contained-node
 
-bin/node -v # should download the docker images if you don't have them yet
-# v5.9.0
+# change the PATH only for this shell session
+PATH=$PWD/bin:PATH
 
-bin/npm -v
-# 3.7.3
+# Install nsenter and docker-enter from https://github.com/jpetazzo/nsenter by doing: 
+docker run --rm -v /usr/local/bin:/target jpetazzo/nsenter
 
-bin/node index.js
-# should display "hey, this is index.js!", proving that the container can reach through local filesin $PWD
-
-bin/npm install is-thirteen
-# the modules installs normally and node_modules is created
-
-npm whoami # real non-dockerized npm
-# davidbruant
-
-bin/npm whoami
-# npm ERR! need auth this command requires you to be logged in.
-# npm ERR! need auth You need to authorize this machine using `npm adduser`
-
-# Obviously because $HOME/.npmrc is not shared with the container. Beware, ./.npmrc is shared!
-# so consequently:
-
-bin/npm install https://github.com/contolini/pizza-party
-# the worm gets installed via the dockerized npm
-# the install script starts, it does not publish a new version, because we're not logged in
-
-# VICTORY!!
-
-bin/loggednpm whoami
-# davidbruant
-# this way, you can still publish ;-)
 ````
 
-The worm would not work because the dockerized version of npm is not logged in.
+
+
+## Defense POC
+
+````sh
+cd project-alpha
+cat package.json
+npm install https://github.com/DavidBruant/harmless-worm --save
+cat package.json
+# Notice that package.json has been modified by a lifecycle script :-(
+
+# reset to non infected state
+cd .. 
+git checkout project-alpha
+
+# Build the dindnode image (it's a long step because node is compiled)
+docker build -t dindnode .
+
+docker-compose -f contained-services.yml run -d --name containednode containednode
+docker exec containednode docker pull mhart/alpine-node:5
+
+./bin/containednpm -v # running npm via the container
+
+cd project-alpha
+ls -l node_modules
+# there are no modules
+
+../bin/containednpm install is-thirteen --save
+# Does the expected, works fine
+../bin/containednpm install https://github.com/DavidBruant/harmless-worm/tarball/master --save
+# the worm postinstall fails
+
+ls -l node_modules
+# the worm and is-thirteen are installed in the project-alpha/node_modules
+cat package.json
+# worm is in dependencies as expected, BUT the worm has NOT infected the file
+rm -R node_modules
+
+
+cd ../project-beta
+./bin/containednpm install https://github.com/DavidBruant/harmless-worm --save
+# the worm fails again
+
+ls -l node_modules
+# the worm is installed on beta
+cat package.json
+# worm is in dependencies as expected
+rm -R node_modules
+
+````
+
+The main reason the worm fails is that it does not have authority it does not need to
 The worm can modify package.json anyway and wait for us to publish
 
-
-# Limitations
-
-* **Performance** docker adds some slowness but it's bearable
-* **File created in containers are owned by `root`**. This is annoying and forces to do `sudo chown -R $USER .` regularly.
+Feel free to try to install [rimrafall](https://github.com/joaojeronimo/rimrafall); it will delete all the files in the container... which none of them you care about (except the `project-alpha` files).
 
 
-# Room for improvements
+## Limitations and room for improvements
 
-* A single command could be provided (instead of `npm`+`loggednpm`) and analyze the commandline arguments to pick the most relevant one
+There are plenty of either, but that's not the point. The point was to demonstrate that secure and useful user-contributed code is possible, not to promote this specific implementation.
 
 
 
+## Inspirations and credit
 
-# Inspirations
+Lots of inspirations for this work. But these may be the main ones
 
 * [Polaris](http://www.hpl.hp.com/techreports/2004/HPL-2004-221.html)
 * [Virus Safe Computing Initiative](https://www.youtube.com/watch?v=pMhH6IKBrVo)
