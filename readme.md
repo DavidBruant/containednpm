@@ -1,4 +1,4 @@
-# Contained-node
+# Containednpm
 
 There is an [npm worm vulnerability](https://www.kb.cert.org/vuls/id/319816). One of the main problems is that random scripts are run with full user privilege.
 

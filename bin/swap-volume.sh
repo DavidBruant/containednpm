@@ -7,7 +7,7 @@ CONTAINER=$1
 HOSTPATH=$2
 CONTPATH=$3
 
-REALPATH=$(readlink --canonicalize $HOSTPATH)
+REALPATH=$(x-readlink.sh $HOSTPATH)
 FILESYS=$(df -P $REALPATH | tail -n 1 | awk '{print $6}')
 
 while read DEV MOUNT JUNK
