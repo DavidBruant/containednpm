@@ -30,6 +30,14 @@ PATH=$PWD/bin:$PATH
 # Install nsenter and docker-enter from https://github.com/jpetazzo/nsenter by doing: 
 docker run --rm -v /usr/local/bin:/target jpetazzo/nsenter
 
+# Build the dindnode image (it's a long step because node is compiled)
+docker build -t dindnode .
+
+docker-compose -f contained-services.yml run -d --name containednode containednode
+docker exec containednode docker pull mhart/alpine-node:5
+
+./bin/containednpm -v # running npm via the container
+
 ````
 
 
@@ -49,14 +57,6 @@ cat package.json
 # reset to non infected state
 cd .. 
 git checkout project-alpha
-
-# Build the dindnode image (it's a long step because node is compiled)
-docker build -t dindnode .
-
-docker-compose -f contained-services.yml run -d --name containednode containednode
-docker exec containednode docker pull mhart/alpine-node:5
-
-./bin/containednpm -v # running npm via the container
 
 cd project-alpha
 ls -l node_modules
