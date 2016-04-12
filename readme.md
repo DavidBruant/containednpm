@@ -7,7 +7,7 @@ This repo provides a proof that secure user-contributed scripts is possible. It'
 
 ## How it works
 
-Run node and npm both from [Docker](https://www.docker.com/) containers with reduced authority by default.
+`containednpm` is an npm drop-in replacement running inside a [Docker](https://www.docker.com/) containers with reduced authority by default.
 
 
 ## Setup
@@ -35,6 +35,9 @@ docker run --rm -v /usr/local/bin:/target jpetazzo/nsenter
 
 
 ## Defense POC
+
+:warning: **This only works on Linux for now. It's certainly possible to have it work on Windows and Mac, but that's for another day**
+
 
 ````sh
 cd project-alpha
