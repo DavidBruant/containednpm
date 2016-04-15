@@ -18,7 +18,7 @@ Need an update software that checks/downloads the newer docker images
 
 # postinstall scripts that build something
 
-Requires write-authority on current directory (`$PWD`) to create subdirectories/files
+Requires write authority on current directory (`$PWD`) to create subdirectories/files
 
 
 # npm needs access to the network to fetch packages
@@ -54,4 +54,9 @@ Maybe environment variable like `NODE_VERSION`
 # npm publish
 
 provide a `loggednpm` command
+
+
+# Malicious code can be hidden inside the package code 
+
+Need to run node contained as well
 
