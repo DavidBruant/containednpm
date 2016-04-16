@@ -7,7 +7,7 @@ This repo provides a proof that secure user-contributed scripts is possible. It'
 
 ## How it works
 
-Run node and npm both from [Docker](https://www.docker.com/) containers with reduced authority by default.
+`containednpm` is an npm drop-in replacement running inside a [Docker](https://www.docker.com/) containers with reduced authority by default.
 
 
 ## Setup
@@ -30,11 +30,22 @@ PATH=$PWD/bin:$PATH
 # Install nsenter and docker-enter from https://github.com/jpetazzo/nsenter by doing: 
 docker run --rm -v /usr/local/bin:/target jpetazzo/nsenter
 
+# Build the dindnode image (it's a long step because node is compiled)
+docker build -t dindnode .
+
+docker-compose -f contained-services.yml run -d --name containednode containednode
+docker exec containednode docker pull mhart/alpine-node:5
+
+./bin/containednpm -v # running npm via the container
+
 ````
 
 
 
 ## Defense POC
+
+:warning: **This only works on Linux for now. It's certainly possible to have it work on Windows and Mac, but that's for another day**
+
 
 ````sh
 cd project-alpha
@@ -46,14 +57,6 @@ cat package.json
 # reset to non infected state
 cd .. 
 git checkout project-alpha
-
-# Build the dindnode image (it's a long step because node is compiled)
-docker build -t dindnode .
-
-docker-compose -f contained-services.yml run -d --name containednode containednode
-docker exec containednode docker pull mhart/alpine-node:5
-
-./bin/containednpm -v # running npm via the container
 
 cd project-alpha
 ls -l node_modules
