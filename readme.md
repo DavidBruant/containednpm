@@ -22,11 +22,9 @@ git clone git@github.com:DavidBruant/containednpm.git
 cd containednpm
 
 # (optional but recommanded) builds the image a first time and make sure it runs properly
-docker-compose -f contained-services.yml run sh echo 'success'
+docker-compose -f contained-services.yml run contained_npm_script echo 'success'
 
-git config set script-shell ./bin/contained-run-script-sh
-# relative path probably won't work
-# TODO find a command that gives the absolute path
+npm config set script-shell "$PWD"/bin/contained-run-script-sh
 ````
 
 
@@ -38,7 +36,7 @@ git config set script-shell ./bin/contained-run-script-sh
 ````sh
 ## Step 1 : Arbitrary code execution with user privilege
 
-git config delete script-shell sh
+npm config delete script-shell
 
 cd project-alpha
 cat package.json
@@ -50,16 +48,14 @@ cat package.json
 cd .. 
 git checkout project-alpha
 
+npm config set script-shell "$PWD"/bin/contained-run-script-sh
+
 cd project-alpha
 ls -l node_modules
 # there are no modules
 
 
 ## Step 2 : Arbitrary code execution within some docker container
-
-git config set script-shell ./bin/contained-run-script-sh
-# relative path probably won't work
-# TODO find a command that gives the absolute path
 
 npm install is-thirteen --save
 # Does the expected, works fine

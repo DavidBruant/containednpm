@@ -1,0 +1,5 @@
+echo 'contained-run-script-sh'
+echo $@
+echo $PWD
+
+docker-compose -f /home/david/projects/containednpm/contained-services.yml run contained_npm_script sh "$@"

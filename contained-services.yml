@@ -1,52 +1,24 @@
-version: '2'
+version: '3'
 services:
-  base_node:
-    image: dindnode
+  contained_npm_script:
+    build: .
     working_dir: /home/node-app
-
-  #node:
-    #extends: base_node
-    #network_mode: none # No connection to the network by default
-    
-  #npm:
-    #extends: base_node
-    #volumes:
-        # directory for npm -g
-        # `npm config get prefix` is /usr/local, but cannot alias that because both npm and node
-        # are there, so inventing a new directory
-        #- $HOME/Logiciel/docker-global-npm:/usr/local/global-npm-modules
-  
-  # To be started as a daemon 
-  # docker-compose -f contained-services.yml run -d dind
-  #dind:
-    #image: docker:1.10.3-dind
-    #privileged: true
-    # the container_name does not work with docker-compose run https://github.com/docker/compose/issues/2061
-    # Must be passed as command-line argument
-    # container_name: test-dind
-    #volumes:
-        # shared as :rw here and to be passed as :ro to inner container
-        #- $PWD/victim.txt:/home/victim.txt 
-        # no mapping initially to an host directory initially, but it will be added dynamically
-        #- /home/node-app
-  
-  # To be started as a daemon 
-  # docker-compose -f contained-services.yml run -d containednode
-  containednode:
-    extends: base_node
-    privileged: true
-    # the container_name does not work with docker-compose run https://github.com/docker/compose/issues/2061
-    # Must be passed as command-line argument
-    # container_name: containednode
+    # Passing the current user id as user id in the container
+    user: "${USER_ID}"
     volumes:
-        # shared as :rw here and to be passed as :ro to inner container
-        # no mapping initially to an host directory initially, but it will be added dynamically
-        - /home/node-app
-        # replace sh so lifecycle scripts are contained
-        - ./bin/contained-sh-for-lifecycle-scripts:/home/bin/contained-sh:ro
+        # Current directory as working_dir
+        - ~/projects/containednpm/project-alpha:/home/node-app
+        - ~/projects/containednpm/project-alpha/node_modules:/home/node-app/node_modules
+
+        # Passing node binary
+        - /usr/bin/node:/usr/bin/node:ro
+        # Apparently, node needs this file to start ($HOME=/ in the container)
     
-    
-    
-    
-    
-    
+###
+# npm is run with $PWD = ./project-alpha in host
+# contained-run-script-sh is run with ./project-alpha:/home/node-app
+#     and $PWD = ./project-alpha/node_modules/worm
+# node infect.js is run inside the container with $PWD = /home/node-app
+# 
+# What would be needed is a way to forward the part of contained-run-script-sh::$PWD that is after the thing that matches /home/node-app, that is running node infect.js with $PWD = /home/node-app/node_modules/worm (= contained-run-script-sh::$PWD - what /home/node-app is mapped to (~/projects/containednpm/project-alpha))
+# Maybe `npm prefix can help`

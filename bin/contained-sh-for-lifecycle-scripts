@@ -1,7 +1,0 @@
-#!/bin/sh
-
-# This script acts inside the outer container
-
-echo 'this is the containerized sh'
-
-docker run -v /home/node-app:/home/node-app -v /home/node-app/package.json:/home/node-app/package.json:ro mhart/alpine-node:5 sh $*
