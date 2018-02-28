@@ -7,39 +7,25 @@ This repo provides a proof that secure user-contributed scripts is possible. It'
 
 ## How it works
 
-`containednpm` is an npm drop-in replacement running inside a [Docker](https://www.docker.com/) containers with reduced authority by default.
+The shell used as [`script-shell`](https://docs.npmjs.com/misc/config#script-shell) is a `docker run` call that is passed enough authority to work properly, but not enough to do anything seriously harmful.
 
 
 ## Setup
 
 A bunch of things to install before the POC work
 
-* **Install** [Docker](https://docs.docker.com/installation/#installation)
-  * On Ubuntu, there is an [apt repository](https://docs.docker.com/engine/installation/ubuntulinux/)
-    * (for steps 5 to 7, do `echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" > /etc/apt/sources.list.d/docker.list`)  
-
+* **Install** [Docker](https://docs.docker.com/install/)
 * **Install** [Docker compose](https://docs.docker.com/compose/install/)
 
 ````sh
-git clone git@github.com:DavidBruant/contained-node.git
-cd contained-node
+git clone git@github.com:DavidBruant/containednpm.git
+cd containednpm
 
-# change the PATH only for this shell session
-PATH=$PWD/bin:$PATH
+# (optional but recommanded) builds the image a first time and make sure it runs properly
+docker-compose -f contained-services.yml run contained_npm_script echo 'success'
 
-# Install nsenter and docker-enter from https://github.com/jpetazzo/nsenter by doing: 
-docker run --rm -v /usr/local/bin:/target jpetazzo/nsenter
-
-# Build the dindnode image (it's a long step because node is compiled)
-docker build -t dindnode .
-
-docker-compose -f contained-services.yml run -d --name containednode containednode
-docker exec containednode docker pull mhart/alpine-node:5
-
-./bin/containednpm -v # running npm via the container
-
+npm config set script-shell "$PWD"/bin/contained-run-script-sh.js
 ````
-
 
 
 ## Defense POC
@@ -48,6 +34,10 @@ docker exec containednode docker pull mhart/alpine-node:5
 
 
 ````sh
+## Step 1 : Arbitrary code execution with user privilege
+
+npm config delete script-shell
+
 cd project-alpha
 cat package.json
 npm install https://github.com/DavidBruant/harmless-worm --save
@@ -58,14 +48,19 @@ cat package.json
 cd .. 
 git checkout project-alpha
 
+npm config set script-shell "$PWD"/bin/contained-run-script-sh.js
+
 cd project-alpha
 ls -l node_modules
 # there are no modules
 
-../bin/containednpm install is-thirteen --save
+
+## Step 2 : Arbitrary code execution within some docker container
+
+npm install is-thirteen --save
 # Does the expected, works fine
-../bin/containednpm install https://github.com/DavidBruant/harmless-worm/tarball/master --save
-# the worm postinstall fails
+npm install https://github.com/DavidBruant/harmless-worm --save
+# the worm postinstall fails! \o/
 
 ls -l node_modules
 # the worm and is-thirteen are installed in the project-alpha/node_modules
@@ -74,22 +69,23 @@ cat package.json
 rm -R node_modules
 
 
+## Step 3 : Arbitrary code execution within some docker container for some other project
+
 cd ../project-beta
 ./bin/containednpm install https://github.com/DavidBruant/harmless-worm --save
-# the worm fails again
+# the worm fails again! \o/
 
 ls -l node_modules
 # the worm is installed on beta
 cat package.json
 # worm is in dependencies as expected
 rm -R node_modules
-
 ````
 
-The main reason the worm fails is that it does not have authority it does not need to
+The main reason the worm fails is that it does not have authority it should not have in the first place
 The worm can modify package.json anyway and wait for us to publish
 
-Feel free to try to install [rimrafall](https://github.com/joaojeronimo/rimrafall); it will delete all the files in the container... which none of them you care about (except the `project-alpha` files).
+Feel free to try to install [rimrafall](https://github.com/joaojeronimo/rimrafall); it will delete all the files in the container... which you don't really care about (except the `project-alpha` files).
 
 
 ## Limitations and room for improvements
