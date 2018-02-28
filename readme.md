@@ -24,7 +24,7 @@ cd containednpm
 # (optional but recommanded) builds the image a first time and make sure it runs properly
 docker-compose -f contained-services.yml run contained_npm_script echo 'success'
 
-npm config set script-shell "$PWD"/bin/contained-run-script-sh
+npm config set script-shell "$PWD"/bin/contained-run-script-sh.js
 ````
 
 
@@ -48,7 +48,7 @@ cat package.json
 cd .. 
 git checkout project-alpha
 
-npm config set script-shell "$PWD"/bin/contained-run-script-sh
+npm config set script-shell "$PWD"/bin/contained-run-script-sh.js
 
 cd project-alpha
 ls -l node_modules
