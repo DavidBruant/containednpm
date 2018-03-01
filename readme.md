@@ -66,20 +66,6 @@ ls -l node_modules
 # the worm and is-thirteen are installed in the project-alpha/node_modules
 cat package.json
 # worm is in dependencies as expected, BUT the worm has NOT infected the file
-rm -R node_modules
-
-
-## Step 3 : Arbitrary code execution within some docker container for some other project
-
-cd ../project-beta
-./bin/containednpm install https://github.com/DavidBruant/harmless-worm --save
-# the worm fails again! \o/
-
-ls -l node_modules
-# the worm is installed on beta
-cat package.json
-# worm is in dependencies as expected
-rm -R node_modules
 ````
 
 The main reason the worm fails is that it does not have authority it should not have in the first place
